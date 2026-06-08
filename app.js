@@ -45,3 +45,77 @@ sendMessage();
 }
 }
 );
+
+async function sendMessage(){
+
+const text =
+msgInput.value.trim();
+
+if(!text) return;
+
+addMessage(text,"user");
+
+msgInput.value="";
+
+try{
+
+const response =
+await fetch(
+`https://generativelanguage.googleapis.com/v1beta/models/${CONFIG.model}:generateContent?key=${CONFIG.apiKey}`,
+{
+method:"POST",
+
+headers:{
+"Content-Type":
+"application/json"
+},
+
+body:JSON.stringify({
+
+contents:[
+{
+parts:[
+{text:text}
+]
+}
+],
+
+generationConfig:{
+temperature:
+CONFIG.temperature,
+
+topP:
+CONFIG.topP,
+
+topK:
+CONFIG.topK,
+
+maxOutputTokens:
+CONFIG.maxOutputTokens
+}
+
+})
+}
+);
+
+const data =
+await response.json();
+
+const reply =
+data.candidates?.[0]
+?.content?.parts?.[0]
+?.text ||
+"Tidak ada jawaban";
+
+addMessage(reply,"ai");
+
+}catch(err){
+
+addMessage(
+"Error: "+err.message,
+"ai"
+);
+
+}
+
+}
