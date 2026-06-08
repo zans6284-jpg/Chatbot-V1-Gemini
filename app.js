@@ -366,3 +366,57 @@ navigator.serviceWorker
 );
 
 }
+
+  function exportChat(){
+
+const data = [];
+
+document
+.querySelectorAll(".msg")
+.forEach(msg=>{
+
+data.push({
+
+type:
+msg.classList.contains(
+"user"
+)
+?"user":"ai",
+
+text:
+msg.textContent
+
+});
+
+});
+
+const blob =
+new Blob(
+
+[
+JSON.stringify(
+data,
+null,
+2
+)
+],
+
+{
+type:
+"application/json"
+}
+
+);
+
+const a =
+document.createElement("a");
+
+a.href=
+URL.createObjectURL(blob);
+
+a.download=
+"chat.json";
+
+a.click();
+
+  }
